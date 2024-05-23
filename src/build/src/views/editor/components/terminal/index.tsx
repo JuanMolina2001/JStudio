@@ -10,20 +10,47 @@ const Tmnl: FunctionalComponent<{
   project: Project
 }> = ({ project }) => {
   const { terminal: settings } = useContext(AppContext) as Settings
-  const terminalRef = useRef<HTMLDivElement>(null);
-  const terminal = new Terminal(settings as ITerminalOptions);
+  const terminalRef = useRef<HTMLDivElement>(null); 
+  const terminal = new Terminal({
+    ...settings,
+    scrollOnUserInput: true,
+    rows: 30,
+  } as ITerminalOptions);
   useEffect(() => {
     console.log(terminal.options)
-    terminal.open(document.getElementById('terminal') as HTMLElement);
+    terminal.open(terminalRef.current as HTMLDivElement);
     terminal.write(project.path + '>');
     let lastLine = ''
     let cwd = project.path;
-    terminal.attachCustomKeyEventHandler(e=>{
-      const {content, bool} = keyEventHandler(e) as {content: string, bool: boolean}
+    terminal.attachCustomKeyEventHandler(e => {
+      const { content, bool } = keyEventHandler(e) as { content: string, bool: boolean }
       terminal.write(content)
+      if (content === '\b \b' && lastLine.length > 0) {
+        lastLine = lastLine.slice(0, -1)
+      }
       return bool
     });
-
+    window.JStudio.terminal.onLog((log) => {
+      terminal.attachCustomKeyEventHandler(() => false);
+      if (log.type === 'cwd') {
+        cwd = log.message;
+      }
+      terminal.write(log.message);
+      terminal.write('\r\n');
+      if (log.type === 'finish') {
+        terminal.attachCustomKeyEventHandler(e => {
+          const { content, bool } = keyEventHandler(e) as { content: string, bool: boolean }
+          terminal.write(content)
+          if (content === '\b \b' && lastLine.length > 0) {
+            lastLine = lastLine.slice(0, -1)
+          }
+          return bool
+        });
+        terminal.write(cwd + '>');
+      }
+      
+  
+    })
     terminal.onKey((e) => {
       if (e.key === '\r') {
         terminal.write('\r\n')
@@ -32,29 +59,16 @@ const Tmnl: FunctionalComponent<{
             command: lastLine.split(' ')[0],
             args: lastLine.split(' ').slice(1) || [],
             cwd: cwd
-          }).then(data => {
-            if (data.type === 'cwd') {
-              cwd = data.message;
-              lastLine += e.key;
-              terminal.write(data.message + '>');
-            } else {
-              terminal.write(data.message);
-              terminal.write('\r\n')
-              lastLine += e.key;
-              terminal.write(cwd + '>');
-
-            }
           })
-
+          lastLine = ''
         } else {
           terminal.write(cwd + '>');
         }
       } else {
+        lastLine += e.key;
         terminal.write(e.key)
+        console.log(lastLine)
       }
-
-
-
     })
     return () => {
       terminal.dispose();
@@ -63,9 +77,9 @@ const Tmnl: FunctionalComponent<{
 
 
   return (
-    <div class="relative  w-full h-full flex overflow-hidden">
-      <div ref={terminalRef} class="h-full w-full overflow-y-auto" id="terminal"></div>
-      <div class="flex flex-col h-full w-10">
+    <div class="w-full flex h-full " style={{ background: settings.theme.background }}>
+      <div ref={terminalRef} class="w-full h-full" id="terminal"></div>
+      <div class="flex flex-col  w-10">
         <button>
           <i class="bi bi-terminal-plus row-span-1.5"></i>
         </button>

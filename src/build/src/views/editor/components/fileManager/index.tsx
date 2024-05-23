@@ -5,7 +5,7 @@ const FileExplorer = ({}) => {
   // const {files: settings} = useContext(AppContext)
   const currentProject: Project = JSON.parse(localStorage.getItem('currentProject') as string)
   return (
-    <>
+    <div class="h-full overflow-y-auto">
       <h1 class="text-xl">{currentProject.name}</h1>
       <div class="flex gap-2">
         <button class="hover:bg-[#33333369] p-1 rounded-md">
@@ -30,7 +30,7 @@ const FileExplorer = ({}) => {
         </button>
       </div>
       <Files path={`${currentProject.path}`} />
-    </>
+    </div>
   )
 }
 export default FileExplorer

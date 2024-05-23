@@ -29,9 +29,6 @@ contextBridge.exposeInMainWorld('JStudio', {
             callback(data)
         })
     },
-    run: (projectPath) => {
-        ipcRenderer.send('run-project', projectPath)
-    },
     onConsoleLog: (callback) => {
         ipcRenderer.on('console-logs', (event, logs) => {
             callback(logs)
@@ -54,17 +51,16 @@ contextBridge.exposeInMainWorld('JStudio', {
         saveFile: (file) => {
             ipcRenderer.send('save-file', file)
         },
-        
+
     },
     terminal: {
         run: (data) => {
-            return new Promise((resolve, reject) => {
-                ipcRenderer.send('run-command', data)
-                ipcRenderer.on('run-command-reply', (event, logs) => {
-                    resolve(logs)
-                })
-            })
-           
+            ipcRenderer.send('run-command', data)
         },
+        onLog: (callback) => {
+            ipcRenderer.on('log-command', (event, logs) => {
+                callback(logs)
+            })
+        }
     }
 })

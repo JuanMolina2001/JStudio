@@ -4,7 +4,7 @@ import { useState } from "preact/hooks";
 const Panel: FunctionalComponent<{
   elements: Array<Elements>;
   cols?: string;
-  rows: string;
+  rows?: string;
 
 }> = ({ elements, rows, cols }) => {
   const [active, setActive] = useState<number>(0)
@@ -18,7 +18,7 @@ const Panel: FunctionalComponent<{
         })
         }
       </div>
-      <div id={`${elements[active].title}Container`} class="flex-1 overflow-auto">
+      <div id={`${elements[active].title}Container`} class="flex-1 overflow-hidden">
         {elements[active].component}
       </div>
     </section>

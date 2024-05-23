@@ -30,7 +30,7 @@ const createWindow = () => {
     win.setMenu(null)
 
     win.loadURL('http://localhost:5173/')
-
+  
     ipcHandlers(win)
     win.on('page-title-updated', (event) => {
         event.preventDefault()

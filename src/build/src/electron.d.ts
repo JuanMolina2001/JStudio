@@ -5,7 +5,6 @@ interface Window {
       fetchFiles: (path: FileProject.path | null, callback: (files: any) => void) => void;
       openFile: (filePath: string) => void;
       getAssets: (projectPath: string, callback: (renderAssets: RenderAssets) => void) => void;
-      run: (projectPath: string) => void;
       init: (options: InitOptions, callback: (project: Project) => void) => void;
       openJson: (json: any) => void;
       ide: {
@@ -15,11 +14,9 @@ interface Window {
         setSettings: (settings: IdeSettings) => void;
       }
       terminal: {
-        run : (data: DataCommand) => Promise<{
-          message: string;
-          type: string;
-        }>;
-        logs: (callback: (log: log) => void) => void;
+        run : (data: DataCommand) => void
+        ;
+        onLog: (callback: (log: log) => void) => void;
       }
     };
   }

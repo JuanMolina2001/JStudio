@@ -12,9 +12,9 @@ const TerminalSettings: FunctionalComponent<{
             <p>
                 Font
             </p>
-            <InputText id="terminal-font" name="terminal-font" label="Font Family" value={settings.fontSize} />
-            <InputNumber id="terminal-font-size" name="terminal-font-size" label="Font Size" value={settings.fontFamily} />
-            <InputNumber id="terminal-font-weight" name="terminal-font-weight" label="Font Weight" value={settings.fontWeight} />
+            <InputText id="terminal-font" name="terminal-font" label="Font Family" value={settings.fontFamily} />
+            <InputNumber id="terminal-font-size" name="terminal-font-size" label="Font Size" value={settings.fontSize} />
+            <InputText id="terminal-font-weight" name="terminal-font-weight" label="Font Weight" value={settings.fontWeight} />
             <p>
                 Cursor
             </p>

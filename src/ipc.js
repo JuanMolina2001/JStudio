@@ -97,51 +97,7 @@ exports.ipcHandlers = (win) => {
         });
     });
     // run project
-    ipcMain.on('run-project', (event, projectPath) => {
-        const process = spawn('npm', ['start', projectPath], { shell: true });
-        event.reply('console-logs', {
-            message: 'Starting project...',
-            type: 'info'
-        });
-        // test de error
-        event.reply('console-logs', {
-            message: 'Error: test',
-            type: 'error'
-        });
-        // test de warning
-        event.reply('console-logs', {
-            message: 'Warning: test',
-            type: 'warning'
-        });
-        process.stdout.on('data', (data) => {
-            event.reply('console-logs', {
-                message: data.toString(),
-                type: 'info'
-            });
-        });
 
-        process.stderr.on('data', (data) => {
-            if ((data.toString()).includes(`{"code":-32601,"message":"'Autofill.enable' wasn't found"}"`)) return
-            event.reply('console-logs', {
-                message: `Error: ${data.toString()}`,
-                type: 'error'
-            });
-        });
-
-        process.on('error', (error) => {
-            event.reply('console-logs', {
-                message: `Process error: ${error.message}`,
-                type: 'error'
-            });
-        });
-
-        process.on('close', (code) => {
-            event.reply('console-logs', {
-                message: `Process closed with code: ${code}`,
-                type: 'info'
-            });
-        });
-    });
     // ide
     ipcMain.on('save-file', (event, file) => {
         console.log(file)
@@ -157,18 +113,32 @@ exports.ipcHandlers = (win) => {
     })
     // terminal
     ipcMain.on('run-command', (e, data) => {
-        if(data.command === 'cd') {
-            const newCwd = path.join(data.cwd , data.args[0]);
-            try{
-            process.chdir(newCwd);
-            e.reply('run-command-reply', {
-                message: newCwd,
-                type: 'cwd'
-            
-            });
-            return;
-            }catch(err){
-                e.reply('run-command-reply', {
+        if (data.command.includes('cd')) {
+            if (data.command === 'cd') {
+                cwd = data.cwd;
+                args = data.args[0]
+            } else if (data.command === 'cd..') {
+                cwd = data.cwd;
+                args = '..'
+            } else if (data.command === 'cd/') {
+                cwd = data.cwd;
+                args = '/'
+            } else if (data.command === 'cd~') {
+                cwd = data.cwd;
+                args = '~'
+            }
+
+            const newCwd = path.join(data.cwd, data.args[0]);
+            try {
+                process.chdir(newCwd);
+                e.reply('log-command', {
+                    message: newCwd,
+                    type: 'cwd'
+
+                });
+                return;
+            } catch (err) {
+                e.reply('log-command', {
                     message: `Error: ${err.message}`,
                     type: 'error'
                 });
@@ -176,36 +146,36 @@ exports.ipcHandlers = (win) => {
             }
         }
         const response = spawn(data.command, data.args, { shell: true, cwd: data.cwd });
-        let output = ''; // Para acumular la salida estándar
         let errorOutput = ''; // Para acumular los errores
-    
+
         response.stdout.on('data', (data) => {
-            output += data.toString();
+            e.reply('log-command', {
+                message: data,
+                type: 'info'
+            });
         });
-    
+
         response.stderr.on('data', (data) => {
             errorOutput += data.toString();
         });
-    
+
         response.on('close', (code) => {
             if (errorOutput) {
-                e.reply('run-command-reply', {
+                e.reply('log-command', {
                     message: errorOutput,
                     type: 'error'
-                
-                });
-            } else {
-                e.reply('run-command-reply', {
-                    message: output,
-                    type: 'info'
+
                 });
             }
-            console.log(`Child process exited with code ${code}`);
+            e.reply('log-command', {
+                message: `Process closed with code: ${code}`,
+                type: 'finish'
+            });
         });
-    
+
         response.on('error', (err) => {
             console.error(`Error spawning process: ${err}`);
-            e.reply('run-command-reply', {
+            e.reply('log-command', {
                 message: `Error: ${err.message}`,
                 type: 'error'
             });

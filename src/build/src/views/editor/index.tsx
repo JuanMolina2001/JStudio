@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "preact/hooks";
+import { useEffect, useState } from "preact/hooks";
 import { Panel, Objects, Renderer, FileExplorer, Terminal, Animations, Scenes, IdeComponent } from "./components"
 const Editor = ({ }) => {
   document.title = "Editor - JStudio"
@@ -20,7 +20,11 @@ const Editor = ({ }) => {
           </div>
           <div className="flex items-center gap-5">
             <button class="hover:bg-[var(--primary)] rounded-md w-fit h-fit" onClick={() => {
-              window.JStudio.run(currentProject.path)
+              window.JStudio.terminal.run({
+                  command: 'npm',
+                  args: ['start'],
+                  cwd: currentProject.path,
+                })
             }}>
               <i class="bi bi-play"></i>
             </button>
