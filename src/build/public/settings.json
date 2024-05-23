@@ -1,0 +1,57 @@
+{
+    "general": {
+        "icons": {
+            "name": "BootstrapIcons",
+            "path": null
+        },
+        "theme": "dark"
+    },
+    "ide": {
+        "theme": "vs-dark",
+        "autosave": true,
+        "fontSize": 14,
+        "fontFamily": "console",
+        "tabSize": 4
+    },
+    "files": {
+        "image": {
+            "executable": "default"
+        },
+        "code": {
+            "executable": "default"
+        },
+        "audio": {
+            "executable": "default"
+        }
+    },
+    "terminal": {
+
+        "cursorBlink": false,
+        "cursorStyle": "block",
+        "cursorWidth": 1,
+        "fontFamily": "courier-new, courier, monospace",
+        "fontSize": 15,
+        "fontWeight": "normal",
+        "theme": {
+            "background": "#000000",
+            "black": "#000000",
+            "blue": "#0000ff",
+            "brightBlack": "#808080",
+            "brightBlue": "#0000ff",
+            "brightCyan": "#00ffff",
+            "brightGreen": "#00ff00",
+            "brightMagenta": "#ff00ff",
+            "brightRed": "#ff0000",
+            "brightWhite": "#ffffff",
+            "brightYellow": "#ffff00",
+            "cyan": "#00ffff",
+            "foreground": "#ffffff",
+            "green": "#00ff00",
+            "magenta": "#ff00ff",
+            "red": "#ff0000",
+            "white": "#ffffff",
+            "yellow": "#ffff00"
+        }
+
+    }
+}

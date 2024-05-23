@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/console.js/0.0.2/console.min.js" integrity="sha512-WXX1vlF5QBFTdi9LHH43pYBCf6VLFqo9IX8gWPzwZG3yxpLnfyRqrkbCy0NuZw1jWFbl2OA6hQLjbG+BrY/6/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <title>JStudio</title>
+  <script>
+    String.prototype.capitalize = function () {
+      return this.charAt(0).toUpperCase() + this.slice(1);
+    };
+  </script>
+  <script src="node_modules/monaco-editor/min/vs/loader.js"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

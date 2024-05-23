@@ -1,0 +1,17 @@
+:root[data-theme="dark"] {
+  --background: #181818;
+  --text: #ffffff;
+  scrollbar-color: #727272 #303030;
+  --secondary: #444444;
+  --primary: #3a3a3a;
+  --opacity-text: #ffffff23;
+}
+
+:root[data-theme="light"] {
+  --background: #ececec;
+  --text: #000000;
+  scrollbar-color: #CBD5E0 #EDF2F7;
+  --secondary: #d4d4d4;
+  --primary: #c4c4c4;
+  --opacity-text: #00000065;
+}
