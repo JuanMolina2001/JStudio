@@ -2,51 +2,56 @@ const { contextBridge, ipcRenderer } = require('electron')
 
 contextBridge.exposeInMainWorld('JStudio', {
     ipcRenderer: ipcRenderer,
-    init: (options, callback) => {
+    init: (options) => {
+        return new Promise((resolve, reject) => {
         ipcRenderer.send('init-project', options)
         ipcRenderer.on('init-project-reply', (event, path) => {
-            callback(path)
+            resolve(path)
+        })
         })
     },
-    getPathFiles: (callback) => {
+    getPathFiles: () => {
+        return new Promise((resolve, reject) => {
         ipcRenderer.send('get-path-files')
         ipcRenderer.on('get-path-files-reply', (event, path) => {
-            callback(files)
+            resolve(files)
+        })
         })
     },
-    fetchFiles: (path, callback) => {
+    fetchFiles: (path ) => {
+        return new Promise((resolve, reject) => {
         ipcRenderer.send('fetch-files', path)
         ipcRenderer.on('fetch-files-reply', (event, files) => {
-            callback(files)
+            resolve(files)
+        })
         })
     },
     openFile: (pathFile) => {
         ipcRenderer.send('open-file', pathFile)
     },
-    getAssets: (projectPath, callback) => {
-        ipcRenderer.send('get-assets', projectPath)
-        ipcRenderer.on('get-assets-reply', (event, data) => {
-            callback(data)
+ 
+    settings:{
+        get: () => {
+            return new Promise((resolve, reject) => {
+            ipcRenderer.send('get-settings')
+            ipcRenderer.on('get-settings-reply', (event, settings) => {
+                resolve(settings)
+            })
         })
-    },
-    onConsoleLog: (callback) => {
-        ipcRenderer.on('console-logs', (event, logs) => {
-            callback(logs)
-        })
-    },
-    setSettings: (settings) => {
-        ipcRenderer.send('set-settings', settings)
-    },
-    openJson(json, callback) {
-        ipcRenderer.send('open-json', json)
+        },
+        set: (settings) => {
+            ipcRenderer.send('set-settings', settings)
+        }
     },
     ide: {
-        onOpenFile: (callback) => {
+        onOpenFile: () => {
+            return new Promise((resolve, reject) => {
             ipcRenderer.on('open-default-ide', (event, file) => {
                 document.querySelector('#IDE').click()
-                callback(file)
+                resolve(file)
                 console.log(file)
             })
+        })
         },
         saveFile: (file) => {
             ipcRenderer.send('save-file', file)
@@ -57,10 +62,12 @@ contextBridge.exposeInMainWorld('JStudio', {
         run: (data) => {
             ipcRenderer.send('run-command', data)
         },
-        onLog: (callback) => {
+        onLog: () => {
+            return new Promise((resolve, reject) => {
             ipcRenderer.on('log-command', (event, logs) => {
-                callback(logs)
+                resolve(logs)
             })
+        })
         }
     }
 })

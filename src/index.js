@@ -1,12 +1,11 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const { ipcHandlers } = require('./ipc')
-const fs = require('fs')
 const { MainMenu } = require('./menu')
+const { htmlPath} = require('./main.json')
 function windowsManager(window) {
     const url = window.webContents.getURL();
     if (url.includes('new-project')) {
-
         window.setSize(300, 500)
         window.setResizable(false)
         window.setMenu(null)
@@ -24,13 +23,13 @@ const createWindow = () => {
     const win = new BrowserWindow({
         width: 800,
         height: 600,
-        resizable: false,
         icon: path.join(__dirname, 'icon.png'),
+        webPreferences: {
+            webSecurity: false,
+        }
     })
-    win.setMenu(null)
-
-    win.loadURL('http://localhost:5173/')
-  
+    // win.setMenu(null)
+    win.loadURL(htmlPath)
     ipcHandlers(win)
     win.on('page-title-updated', (event) => {
         event.preventDefault()
@@ -45,7 +44,6 @@ app.whenReady().then(() => {
 
 });
 app.on('browser-window-created', (event, window) => {
-    window.setIcon(path.join(__dirname, 'icon.png'))
     window.webContents.session.setPreloads([path.join(__dirname, 'preload.js')]);
     window.webContents.on('did-finish-load', () => {
         windowsManager(window)

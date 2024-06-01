@@ -1,17 +1,22 @@
 {
-  "name": "JStudio",
+  "name": "jstudio",
   "productName": "JStudio",
   "version": "1.0.0",
   "description": "A js game engine",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
-    "dev": "npm run dev --prefix ./src/build",
-    "build-deps": "npm install --prefix ./src/build",
-    "package": "electron-forge package",
+    "server": "npm run files -- --server && npm-run-all --parallel renderer main",
+    "local": "npm run files -- --local && npm start",
+    "main": "electron-forge start",
+    "renderer": "npm run dev --prefix ./client ",
+    "files": "node scripts/files.js",
+    "deps": "npm install && npm install --prefix ./client",
+    "package": "npm run files -- --local && npm run build --prefix ./client && electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "echo \"No linting configured\""
+    "lint": "echo \"No linting configured\"",
+    "build":"npm run build --prefix ./client"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.4.0",
@@ -22,11 +27,12 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
-    "electron": "30.0.6"
+    "electron": "30.0.6",
+    "npm-run-all": "^4.1.5"
   },
   "keywords": [],
   "author": {
-    "name": "JuanMolina2001",
+    "name": "JoyStudios",
     "email": "juanmolinajm2001@gmail.com"
   },
   "license": "MIT",

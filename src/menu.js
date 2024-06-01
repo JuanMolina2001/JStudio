@@ -2,6 +2,7 @@ const { Menu, BrowserWindow } = require('electron')
 const path = require('path')
 const isMac = process.platform === 'darwin'
 const fs = require('fs')
+const {htmlPath,local} = require('./main.json')
 const template = [
     {
         label: 'File',
@@ -30,8 +31,8 @@ const template = [
                         resizable: false,
                         icon: path.join(__dirname, 'icon.png'),
                     })
-
-                    win.loadURL('http://localhost:5173/settings')
+                    
+                    win.loadURL(htmlPath+'#/settings')
 
                     win.setMenu(null)
                 }

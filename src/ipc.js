@@ -6,7 +6,7 @@ const { dialog } = require('electron')
 const { createProject, openProject } = require('./template')
 const { spawn } = require('child_process');
 const { fileType, openDefault } = require('./utils')
-let settings = require(`./build/public/settings.json`);
+let settings = require(`./settings.json`);
 function openFile(filePath, event) {
     const type = fileType(filePath)
     if (settings.files[type].executable === 'default') {
@@ -68,36 +68,19 @@ exports.ipcHandlers = (win) => {
         openFile(filePath, event)
     })
     // get html, css and js files
-    ipcMain.on('get-assets', (event, ProjectPath) => {
-        const html = fs.readFileSync(path.join(ProjectPath, 'src', 'index.html'), 'utf8')
-        const style = fs.readFileSync(path.join(__dirname, 'build', 'styleRender.css'), 'utf8')
-        const script = fs.readFileSync(path.join(__dirname, 'build', 'scriptRender.js'), 'utf8')
-        event.reply('get-assets-reply', {
-            html,
-            style,
-            script
-        })
-    })
+
     // settings
     ipcMain.on('set-settings', (event, newSettings) => {
-        fs.writeFile(path.join(__dirname, 'build/public', 'settings.json'), JSON.stringify(newSettings), (err) => {
+        fs.writeFile(path.join(__dir,  'settings.json'), JSON.stringify(newSettings), (err) => {
             if (err) {
                 return console.log(err);
             }
             settings = newSettings
         });
     })
-    ipcMain.on('open-json', (event, json) => {
-        const filePath = path.join(__dirname, 'temp.json');
-        fs.writeFile(filePath, JSON.stringify(json), (err) => {
-            if (err) {
-                return console.log(err);
-            }
-            openFile(filePath, event);
-        });
-    });
-    // run project
-
+    ipcMain.on('get-settings', (event) => {
+        event.reply('get-settings-reply', settings)
+    })
     // ide
     ipcMain.on('save-file', (event, file) => {
         console.log(file)
